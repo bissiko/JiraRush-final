@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver resolver;
+    @Qualifier("requestMappingHandlerMapping")
     private final RequestMappingHandlerMapping mapping;
 
     @Override
