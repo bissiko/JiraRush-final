@@ -1,0 +1,9 @@
+# db-properties.yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jira
+    username: jira
+    password: JiraRush
+
+  init:
+    mode: always
