@@ -1,5 +1,8 @@
 # db-properties.yaml
 spring:
+  config:
+    activate:
+      on-profile: prod
   datasource:
     url: jdbc:postgresql://localhost:5432/jira
     username: jira
@@ -7,3 +10,11 @@ spring:
 
   init:
     mode: always
+
+  liquibase:
+    changeLog: "classpath:db/changelog.sql"
+    contexts: prod
+    enabled: true
+
+  data:
+    sql: "classpath:data4dev/data.sql"

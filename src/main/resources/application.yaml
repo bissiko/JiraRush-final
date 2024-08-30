@@ -1,4 +1,5 @@
 #  https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# application.yaml
 app:
   host-url: http://localhost:8080
   test-mail: jira4jr@gmail.com
@@ -8,13 +9,14 @@ app:
     max-pool-size: 100
 
 spring:
+  profiles:
+    active: prod
+
   config:
     import:
-      - mail-properties.yaml
       - db-properties.yaml
+      - mail-properties.yaml
       - oauth2-properties.yaml
-  profiles:
-    active: test
   init:
     mode: never
   jpa:
@@ -32,9 +34,6 @@ spring:
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
-
-  liquibase:
-    changeLog: "classpath:db/changelog.sql"
 
   # Jackson Fields Serialization
   jackson:
@@ -64,6 +63,7 @@ logging:
     com.javarush.jira: DEBUG
     com.javarush.jira.common.config.MvcConfig: WARN
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+    liquibase: DEBUG
 
 server:
   #  https://springdoc.org/index.html#how-can-i-deploy-springdoc-openapi-ui-behind-a-reverse-proxy

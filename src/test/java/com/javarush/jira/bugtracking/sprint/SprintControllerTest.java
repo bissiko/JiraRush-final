@@ -3,9 +3,12 @@ package com.javarush.jira.bugtracking.sprint;
 import com.javarush.jira.AbstractControllerTest;
 import com.javarush.jira.bugtracking.sprint.to.SprintTo;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -19,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class SprintControllerTest extends AbstractControllerTest {
     private static final String SPRINTS_REST_URL = REST_URL + "/sprints/";
     private static final String SPRINTS_BY_PROJECT_REST_URL = SPRINTS_REST_URL + "by-project";
