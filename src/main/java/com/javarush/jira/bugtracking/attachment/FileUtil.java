@@ -7,14 +7,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @UtilityClass
 public class FileUtil {
@@ -24,7 +22,7 @@ public class FileUtil {
         if (multipartFile.isEmpty()) {
             throw new IllegalRequestDataException("Select a file to upload.");
         }
-
+        /*
         File dir = new File(directoryPath);
         if (dir.exists() || dir.mkdirs()) {
             File file = new File(directoryPath + fileName);
@@ -33,6 +31,16 @@ public class FileUtil {
             } catch (IOException ex) {
                 throw new IllegalRequestDataException("Failed to upload file" + multipartFile.getOriginalFilename());
             }
+        }
+        */
+        Path dirPath = Paths.get(directoryPath);
+        Path filePath = dirPath.resolve(fileName);
+
+        try {
+            Files.createDirectories(dirPath);  // Створює директорію, якщо вона не існує
+            Files.copy(multipartFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new IllegalRequestDataException("Failed to upload file " + multipartFile.getOriginalFilename());
         }
     }
 
