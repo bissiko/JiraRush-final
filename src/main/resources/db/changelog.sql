@@ -325,13 +325,13 @@ values ('todo', 'ToDo', 3, 'in_progress,canceled|'),
        ('done', 'Done', 3, 'canceled|'),
        ('canceled', 'Canceled', 3, null);
 
---changeset ishlyakhtenkov:change_UK_USER_BELONG
-
-drop index UK_USER_BELONG;
-create unique index UK_USER_BELONG on USER_BELONG (OBJECT_ID, OBJECT_TYPE, USER_ID, USER_TYPE_CODE) where ENDPOINT is null;
-
 -- New code for task 8
 insert into ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE )
 values (7, 12, 99, '2024-08-26 15:59:51.118849', 'in_progress'),
        (7, 12, 99, '2024-08-29 19:59:51.118849', 'ready_for_review'),
        (7, 12, 99, '2024-08-31 11:39:51.118849', 'done');
+
+--changeset ishlyakhtenkov:change_UK_USER_BELONG
+
+drop index UK_USER_BELONG;
+create unique index UK_USER_BELONG on USER_BELONG (OBJECT_ID, OBJECT_TYPE, USER_ID, USER_TYPE_CODE) where ENDPOINT is null;
