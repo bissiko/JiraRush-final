@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import static com.javarush.jira.bugtracking.ObjectType.TASK;
 import static com.javarush.jira.bugtracking.task.TaskUtil.fillExtraFields;
@@ -39,6 +41,51 @@ public class TaskService {
     private final SprintRepository sprintRepository;
     private final TaskExtMapper extMapper;
     private final UserBelongRepository userBelongRepository;
+
+    //New
+    private final ActivityRepository activityRepository;
+
+    //New
+    public Duration getTimeInProgress(Long taskId) {
+        List<Activity> activities = activityRepository.findByTaskIdAndStatusCodeIn(taskId, List.of("in_progress", "ready_for_review"));
+
+        Optional<LocalDateTime> inProgressTime = activities.stream()
+                .filter(activity -> "in_progress".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst();
+
+        Optional<LocalDateTime> readyForReviewTime = activities.stream()
+                .filter(activity -> "ready_for_review".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst();
+
+        if (inProgressTime.isPresent() && readyForReviewTime.isPresent()) {
+            return Duration.between(inProgressTime.get(), readyForReviewTime.get());
+        } else {
+            return Duration.ZERO;
+        }
+    }
+
+    //New
+    public Duration getTimeInTesting(Long taskId) {
+        List<Activity> activities = activityRepository.findByTaskIdAndStatusCodeIn(taskId, List.of("ready_for_review", "done"));
+
+        Optional<LocalDateTime> readyForReviewTime = activities.stream()
+                .filter(activity -> "ready_for_review".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst();
+
+        Optional<LocalDateTime> doneTime = activities.stream()
+                .filter(activity -> "done".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst();
+
+        if (readyForReviewTime.isPresent() && doneTime.isPresent()) {
+            return Duration.between(readyForReviewTime.get(), doneTime.get());
+        } else {
+            return Duration.ZERO;
+        }
+    }
 
     @Transactional
     public void changeStatus(long taskId, String statusCode) {

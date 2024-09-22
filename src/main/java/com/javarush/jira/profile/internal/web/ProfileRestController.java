@@ -15,7 +15,10 @@ public class ProfileRestController extends AbstractProfileController {
 
     @GetMapping
     public ProfileTo get(@AuthenticationPrincipal AuthUser authUser) {
-        return super.get(authUser.id());
+        ProfileTo profileTo = super.get(authUser.id());
+        System.out.println("Returned ProfileTo: " + profileTo);
+        return profileTo;
+        //return super.get(authUser.id());
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

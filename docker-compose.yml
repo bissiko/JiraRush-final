@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    container_name: jirarush-db
+    environment:
+      POSTGRES_USER: jira
+      POSTGRES_PASSWORD: JiraRush
+      POSTGRES_DB: jira
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - jirarush-network
+
+  # JiraRush Application
+  jirarush-server:
+    build: .
+    container_name: jirarush-server
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/jira
+      SPRING_DATASOURCE_USERNAME: jira
+      SPRING_DATASOURCE_PASSWORD: JiraRush
+    depends_on:
+      - db
+    volumes:
+      - ./resources:/opt/jirarush/resources
+    ports:
+      - "8080:8080"
+    networks:
+      - jirarush-network
+
+  # Nginx Server
+  nginx:
+    image: nginx:latest
+    container_name: jirarush-nginx
+    depends_on:
+      - jirarush-server
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./resources:/opt/jirarush/resources
+    ports:
+      - "80:80"
+    networks:
+      - jirarush-network
+
+# Define a shared network for services
+networks:
+  jirarush-network:
+    driver: bridge
+
+# Named volume for database persistence
+volumes:
+  db-data:
+
+# Команди для:
+# запуску: docker-compose up --build
+# перезапуску: docker-compose restart
+# зупинка контейнерів: docker-compose down
